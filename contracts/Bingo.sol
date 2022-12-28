@@ -35,9 +35,9 @@ contract Bingo {
     function draw(uint256 gameId)
         external
     {
-        lastDrawn[gameId] = uint(blockhash(block.number - 1));
+        lastDrawn[gameId] = bytes1(blockhash(block.number - 1));
     }
-        mapping(uint256 => uint256) lastDrawn;
+        mapping(uint256 => bytes1) lastDrawn;
 
 
 
@@ -63,12 +63,15 @@ contract Bingo {
     function mark(uint256 gameId, uint8[] memory squares)
         external
     {
+        bytes32 _board = board[gameId][msg.sender];
         for (uint i = 0; i < squares.length; i++) {
-            if(squares[i] != 12)
-                marks[gameId][msg.sender][squares[i]] = true;   
+            if(squares[i] != 12) {
+                bytes32 _mark = bytes32(lastDrawn[gameId]) >> (squares[i]*8);
+                board[gameId][msg.sender] = _board ^ _mark;
+            }
         }
     }
-        mapping (uint256 => mapping(address => bool[25])) marks;
+
 
 
     function claim(uint256 gameId)
@@ -85,21 +88,22 @@ contract Bingo {
     function row(uint256 gameId)
         public
         view 
-        returns (bool hasRow)
+        returns (bool)
     {
-        hasRow = false;
-        bool[25] memory _marks = marks[gameId][msg.sender];
-        
+        bytes32 _board = board[gameId][msg.sender];
+
         for (uint i = 0; i < 5; i++) {
             if(i != 2) {
-                hasRow = _marks[i*5]
-                        && _marks[i*5+1]
-                        && _marks[i*5+2]
-                        && _marks[i*5+3]
-                        && _marks[i*5+4];
-
+                bytes1 buffer = _board[i*5]
+                            ^ _board[i*5+1]
+                            ^ _board[i*5+2]
+                            ^ _board[i*5+3]
+                            ^ _board[i*5+4];
+                if (buffer == bytes1(0))
+                    return true;
             }
         }
+        return false;
     }
 
 
@@ -109,17 +113,19 @@ contract Bingo {
         returns (bool hasCol)
     {
         hasCol = false;
-        bool[25] memory _marks = marks[gameId][msg.sender];
+        bytes32 _board = board[gameId][msg.sender];
 
         for (uint i = 0; i < 5; i++) {
             if(i != 2) {
-                hasCol = _marks[i]
-                        && _marks[5+i]
-                        && _marks[10+i]
-                        && _marks[15+i]
-                        && _marks[20+i];
-
+                bytes1 buffer = _board[i]
+                            ^ _board[5+i]
+                            ^ _board[10+i]
+                            ^ _board[15+i]
+                            ^ _board[20+i];
+                if (buffer == bytes1(0))
+                    return true;
             }
         }
+        return false;
     }
 }
