@@ -88,13 +88,17 @@ contract Bingo {
         returns (bool hasRow)
     {
         hasRow = false;
+        bool[25] memory _marks = marks[gameId][msg.sender];
+        
         for (uint i = 0; i < 5; i++) {
-            if(i != 2)
-                hasRow = marks[gameId][msg.sender][i*5]
-                        && marks[gameId][msg.sender][i*5+1]
-                        && marks[gameId][msg.sender][i*5+2]
-                        && marks[gameId][msg.sender][i*5+3]
-                        && marks[gameId][msg.sender][i*5+4];
+            if(i != 2) {
+                hasRow = _marks[i*5]
+                        && _marks[i*5+1]
+                        && _marks[i*5+2]
+                        && _marks[i*5+3]
+                        && _marks[i*5+4];
+
+            }
         }
     }
 
@@ -105,13 +109,17 @@ contract Bingo {
         returns (bool hasCol)
     {
         hasCol = false;
+        bool[25] memory _marks = marks[gameId][msg.sender];
+
         for (uint i = 0; i < 5; i++) {
-            if(i != 2)
-                hasCol = marks[gameId][msg.sender][0+i]
-                        && marks[gameId][msg.sender][5+i]
-                        && marks[gameId][msg.sender][15+i]
-                        && marks[gameId][msg.sender][20+i]
-                        && marks[gameId][msg.sender][25+i];
+            if(i != 2) {
+                hasCol = _marks[i]
+                        && _marks[5+i]
+                        && _marks[10+i]
+                        && _marks[15+i]
+                        && _marks[20+i];
+
+            }
         }
     }
 }
