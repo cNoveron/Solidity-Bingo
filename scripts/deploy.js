@@ -1,6 +1,7 @@
 // This is a script for deploying your contracts. You can adapt it to deploy
 // yours, or create new ones.
 
+const { BigNumber } = require("ethers");
 const path = require("path");
 
 async function main() {
@@ -26,13 +27,13 @@ async function main() {
   const Token = await ethers.getContractFactory("Token");
   const token = await Token.deploy();
   await token.deployed();
-  await token.mint(100000*1e18);
+  await token.mint(alice.address, BigNumber.from(10).pow(18).mul(100));
 
   console.log("Token address:", token.address);
 
 
   const Bingo = await ethers.getContractFactory("Bingo");
-  const bingo = await Bingo.deploy();
+  const bingo = await Bingo.deploy(token.address);
   await bingo.deployed(token.address);
 
   await bingo.newGame();

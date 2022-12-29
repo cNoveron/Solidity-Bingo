@@ -54,7 +54,7 @@ contract Token {
             "Transferring from %s to %s %s tokens",
             msg.sender,
             to,
-            amount
+            amount/1e18
         );
 
         // Transfer the amount.
