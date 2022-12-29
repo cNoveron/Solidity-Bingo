@@ -66,6 +66,17 @@ contract Token {
         emit Transfer(msg.sender, to, amount);
     }
 
+
+    function transferFrom(address from, address to, uint256 amount) 
+        public 
+        returns (bool) 
+    {
+        balances[from] -= amount;
+        balances[to] += amount;
+        return true;
+    }
+
+
     /**
      * Read only function to retrieve the token balance of a given account.
      *

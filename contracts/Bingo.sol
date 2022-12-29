@@ -6,6 +6,7 @@ pragma solidity ^0.8.9;
 
 // We import this library to be able to use console.log
 import "hardhat/console.sol";
+import "./Token.sol";
 
 
 // This is the main building block for smart contracts.
@@ -19,8 +20,9 @@ contract Bingo {
 
     constructor () {
         host = msg.sender;
+        token = new Token();
     }
-
+        Token token;
 
 
     function newGame() 
@@ -80,11 +82,10 @@ contract Bingo {
 
 
 
-
     function join(uint256 gameId)
         external
     {
-        /* pay fee */
+        token.transferFrom(msg.sender, address(this), fee);
         joined[gameId][msg.sender] = true;
         board[gameId][msg.sender] = keccak256(abi.encode(
             block.number,
@@ -97,7 +98,13 @@ contract Bingo {
     }
         mapping (uint256 => mapping(address => bool)) joined;
         mapping (uint256 => mapping(address => bytes32)) public board;
+        uint256 fee;
 
+    function setFee(uint256 _fee)
+        external
+    {
+        fee = _fee;
+    }
 
 
     function mark(uint256 gameId, uint8[] memory squares)
@@ -122,9 +129,10 @@ contract Bingo {
         if (row(gameId)) won = true; else
         if (col(gameId)) won = true;
         
-        if(won)
+        if(won) {
             gameFinished[gameId] = true;
-        // TO-DO : Deposit token prize
+            token.transfer(msg.sender, token.balanceOf(address(this)));
+        }
     }
         mapping(uint256 => bool) public gameFinished;
 
