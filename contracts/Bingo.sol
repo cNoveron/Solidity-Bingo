@@ -11,10 +11,21 @@ import "hardhat/console.sol";
 // This is the main building block for smart contracts.
 contract Bingo {
 
+    modifier onlyHost {
+        require(msg.sender == host);
+        _;
+    }
+        address host;
+
+    constructor () {
+        host = msg.sender;
+    }
+
 
 
     function newGame() 
         external
+        onlyHost
         returns(uint256 gameId)
     {
         gameId = gameCount += 1;
@@ -25,6 +36,7 @@ contract Bingo {
 
     function start(uint256 gameId)
         external
+        onlyHost
     {
         gameStarted[gameId] = true;
     }
@@ -34,6 +46,7 @@ contract Bingo {
 
     function draw(uint256 gameId)
         external
+        onlyHost
     {
         bytes32 buffer = blockhash(block.number - 1);
         bytes1 drawn = bytes1(buffer);
