@@ -64,8 +64,9 @@ async function main() {
       await bingo.connect(alice).mark(1, squares)
       board = await bingo.board(1, alice.address)
     }
+
+    await bingo.connect(alice).claim(1);
   }
-  console.log(board)
   // We also save the contract's artifacts and address in the frontend directory
   //saveFrontendFiles(token);
 }
