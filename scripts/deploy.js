@@ -45,13 +45,21 @@ async function main() {
     await bingo.connect(host).draw(1);
     const lastDrawn = await bingo.lastDrawn(1);
     // console.log(lastDrawn)
-  
-    const index = board.substring(2,25+2).indexOf(lastDrawn.substring(2))
-    if (index != -1 && index%2 == 0 && index != 12 && index < 25) {
-      await bingo.connect(alice).mark(1, [index/2])
+    let index = -1, squares = [];
+    do {
+      index = board.substring(2, 2*25 + 2).indexOf(lastDrawn.substring(2), index+1)
+      if (index != -1 && index%2 == 0 && index != 12) {
+        squares.push(index/2)
+      }
+    } while (-1 < index)
+
+    if(squares.length != 0) {
+      console.log(squares)
+      await bingo.connect(alice).mark(1, squares)
       board = await bingo.board(1, alice.address)
     }
   }
+  console.log(board)
   // We also save the contract's artifacts and address in the frontend directory
   //saveFrontendFiles(token);
 }
