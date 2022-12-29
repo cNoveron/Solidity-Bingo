@@ -14,13 +14,14 @@ async function main() {
   }
 
   // ethers is available in the global scope
-  const [deployer] = await ethers.getSigners();
+  const [host, alice, bob] = await ethers.getSigners();
   console.log(
     "Deploying the contracts with the account:",
-    await deployer.getAddress()
+    await host.getAddress()
   );
 
-  console.log("Account balance:", (await deployer.getBalance()).toString());
+  console.log("Account balance:", (await host.getBalance()).toString());
+
 
   const Token = await ethers.getContractFactory("Token");
   const token = await Token.deploy();
@@ -28,9 +29,33 @@ async function main() {
 
   console.log("Token address:", token.address);
 
+
+  const Bingo = await ethers.getContractFactory("Bingo");
+  const bingo = await Bingo.deploy();
+  await bingo.deployed();
+
+  await bingo.newGame();
+  await bingo.start(1);
+
+  await bingo.connect(alice).join(1)
+  var board = await bingo.board(1, alice.address)
+  console.log(`board: ${board}`)
+  
+  for (let i = 0; i < 1000; i++) {
+    await bingo.connect(host).draw(1);
+    const lastDrawn = await bingo.lastDrawn(1);
+    // console.log(lastDrawn)
+  
+    const index = board.substring(2,25+2).indexOf(lastDrawn.substring(2))
+    if (index != -1 && index%2 == 0 && index != 12 && index < 25) {
+      await bingo.connect(alice).mark(1, [index/2])
+      board = await bingo.board(1, alice.address)
+    }
+  }
   // We also save the contract's artifacts and address in the frontend directory
-  saveFrontendFiles(token);
+  //saveFrontendFiles(token);
 }
+
 
 function saveFrontendFiles(token) {
   const fs = require("fs");
