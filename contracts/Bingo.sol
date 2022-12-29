@@ -37,7 +37,7 @@ contract Bingo {
     {
         lastDrawn[gameId] = bytes1(blockhash(block.number - 1));
     }
-        mapping(uint256 => bytes1) lastDrawn;
+        mapping(uint256 => bytes1) public lastDrawn;
 
 
 
@@ -56,7 +56,7 @@ contract Bingo {
         ));
     }
         mapping (uint256 => mapping(address => bool)) joined;
-        mapping (uint256 => mapping(address => bytes32)) board;
+        mapping (uint256 => mapping(address => bytes32)) public board;
 
 
 
@@ -66,8 +66,10 @@ contract Bingo {
         bytes32 _board = board[gameId][msg.sender];
         for (uint i = 0; i < squares.length; i++) {
             if(squares[i] != 12) {
+                // console.logBytes32(bytes32(lastDrawn[gameId])>>8);
                 bytes32 _mark = bytes32(lastDrawn[gameId]) >> (squares[i]*8);
                 board[gameId][msg.sender] = _board ^ _mark;
+                console.logBytes32(board[gameId][msg.sender]);
             }
         }
     }
