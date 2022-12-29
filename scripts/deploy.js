@@ -42,12 +42,18 @@ async function main() {
   console.log(`board: ${board}`)
   
   for (let i = 0; i < 1000; i++) {
+    ended = await bingo.gameFinished(1)
+    if (ended) {
+      console.log(`game ended at turn ${i}`)
+      break;
+    }
+
     await bingo.connect(host).draw(1);
     const lastDrawn = await bingo.lastDrawn(1);
     // console.log(lastDrawn)
     let index = -1, squares = [];
     do {
-      index = board.substring(2, 2*25 + 2).indexOf(lastDrawn.substring(2), index+1)
+      index = board.substring(2, 2*25 + 2).indexOf(lastDrawn.substring(2), index+2)
       if (index != -1 && index%2 == 0 && index != 12) {
         squares.push(index/2)
       }
