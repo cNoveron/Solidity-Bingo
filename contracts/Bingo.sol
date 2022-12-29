@@ -66,10 +66,8 @@ contract Bingo {
         bytes32 _board = board[gameId][msg.sender];
         for (uint i = 0; i < squares.length; i++) {
             if(squares[i] != 12) {
-                // console.logBytes32(bytes32(lastDrawn[gameId])>>8);
                 bytes32 _mark = bytes32(lastDrawn[gameId]) >> (squares[i]*8);
                 board[gameId][msg.sender] = _board ^ _mark;
-                console.logBytes32(board[gameId][msg.sender]);
             }
         }
     }
@@ -79,11 +77,16 @@ contract Bingo {
     function claim(uint256 gameId)
         external
     {
-        if (row(gameId)) gameFinished[gameId] = true;
-        if (col(gameId)) gameFinished[gameId] = true;
+        bool won = false;
+
+        if (row(gameId)) won = true; else
+        if (col(gameId)) won = true;
+        
+        if(won)
+            gameFinished[gameId] = true;
         // TO-DO : Deposit token prize
     }
-        mapping(uint256 => bool) gameFinished;
+        mapping(uint256 => bool) public gameFinished;
 
 
 
