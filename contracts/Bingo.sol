@@ -36,9 +36,11 @@ contract Bingo {
         external
     {
         bytes32 buffer = blockhash(block.number - 1);
-        while (buffer == bytes32(0))
-            buffer = buffer >> 8;
-            
+        bytes1 drawn = bytes1(buffer);
+        while (drawn == bytes1(0)) {
+            drawn = bytes1(buffer);
+            buffer = buffer << 8;
+        }
         lastDrawn[gameId] = bytes1(buffer);
     }
         mapping(uint256 => bytes1) public lastDrawn;
