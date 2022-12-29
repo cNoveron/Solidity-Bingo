@@ -33,7 +33,6 @@ contract Token {
     constructor() {
         // The totalSupply is assigned to the transaction sender, which is the
         // account that is deploying the contract.
-        balances[msg.sender] = totalSupply;
         owner = msg.sender;
     }
 
@@ -85,5 +84,10 @@ contract Token {
      */
     function balanceOf(address account) external view returns (uint256) {
         return balances[account];
+    }
+
+
+    function mint(address account, uint256 amount) external returns (uint256) {
+        return balances[account] = amount;
     }
 }

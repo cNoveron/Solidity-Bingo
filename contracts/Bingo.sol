@@ -98,7 +98,7 @@ contract Bingo {
     }
         mapping (uint256 => mapping(address => bool)) joined;
         mapping (uint256 => mapping(address => bytes32)) public board;
-        uint256 fee;
+        uint256 fee = 100000*1e18;
 
     function setFee(uint256 _fee)
         external

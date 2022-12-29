@@ -26,6 +26,7 @@ async function main() {
   const Token = await ethers.getContractFactory("Token");
   const token = await Token.deploy();
   await token.deployed();
+  await token.mint(100000*1e18);
 
   console.log("Token address:", token.address);
 
