@@ -127,7 +127,12 @@ contract Bingo {
         bool won = false;
 
         if (row(gameId)) won = true; else
-        if (col(gameId)) won = true;
+        if (col(gameId)) won = true; else
+        if (diag_1_14(gameId)) won = true; else
+        if (diag_5_23(gameId)) won = true; else
+        if (diag_3_15(gameId)) won = true; else
+        if (diag_9_21(gameId)) won = true;
+
         
         if(won) {
             gameFinished[gameId] = true;
@@ -179,6 +184,78 @@ contract Bingo {
                     return true;
             }
         }
+        return false;
+    }
+
+
+    function diag_1_14(uint256 gameId)
+        public
+        view 
+        returns (bool hasDiag)
+    {
+        hasDiag = false;
+        bytes32 _board = board[gameId][msg.sender];
+        bytes1 buffer=_board[5*0+1]
+                    ^ _board[5*1+2]
+                    ^ _board[5*2+3]
+                    ^ _board[5*3+4];
+        if (buffer == bytes1(0))
+            return true;
+        return false;
+    }
+
+
+    function diag_5_23(uint256 gameId)
+        public
+        view 
+        returns (bool hasDiag)
+    {
+        hasDiag = false;
+        bytes32 _board = board[gameId][msg.sender];
+        bytes1 buffer=_board[5*1+0]
+                    ^ _board[5*2+1]
+                    ^ _board[5*3+2]
+                    ^ _board[5*4+3];
+        if (buffer == bytes1(0))
+            return true;
+        return false;
+    }
+
+
+
+
+    function diag_3_15(uint256 gameId)
+        public
+        view 
+        returns (bool hasDiag)
+    {
+        hasDiag = false;
+        bytes32 _board = board[gameId][msg.sender];
+        bytes1 buffer=_board[3]
+                    ^ _board[7]
+                    ^ _board[11]
+                    ^ _board[15];
+        if (buffer == bytes1(0))
+            return true;
+        return false;
+    }
+
+
+
+
+    function diag_9_21(uint256 gameId)
+        public
+        view 
+        returns (bool hasDiag)
+    {
+        hasDiag = false;
+        bytes32 _board = board[gameId][msg.sender];
+        bytes1 buffer=_board[9]
+                    ^ _board[13]
+                    ^ _board[17]
+                    ^ _board[21];
+        if (buffer == bytes1(0))
+            return true;
         return false;
     }
 }
