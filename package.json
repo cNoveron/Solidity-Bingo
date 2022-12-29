@@ -30,6 +30,7 @@
     "solidity-coverage": "^0.7.21"
   },
   "dependencies": {
-    "@hapi/hapi": "^21.1.0"
+    "@hapi/hapi": "^21.1.0",
+    "hapi": "^18.1.0"
   }
 }
