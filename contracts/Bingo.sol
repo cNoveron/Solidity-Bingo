@@ -18,9 +18,9 @@ contract Bingo {
     }
         address host;
 
-    constructor () {
+    constructor (address _token) {
         host = msg.sender;
-        token = new Token();
+        token = Token(_token);
     }
         Token token;
 

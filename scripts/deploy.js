@@ -32,7 +32,7 @@ async function main() {
 
   const Bingo = await ethers.getContractFactory("Bingo");
   const bingo = await Bingo.deploy();
-  await bingo.deployed();
+  await bingo.deployed(token.address);
 
   await bingo.newGame();
   await bingo.start(1);
