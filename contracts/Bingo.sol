@@ -29,18 +29,28 @@ contract Bingo {
         returns(uint256 gameId)
     {
         gameId = gameCount += 1;
+        gameCreated[gameId] = block.timestamp;
     }
         uint256 gameCount;
-
+        mapping(uint256 => uint256) gameCreated;
 
 
     function start(uint256 gameId)
         external
         onlyHost
     {
+        require(gameCreated[gameId]+minJoinWaitTime < block.timestamp);
         gameStarted[gameId] = true;
     }
         mapping(uint256 => bool) gameStarted;
+        uint256 minJoinWaitTime;
+
+    function setMinJoinWaitTime(uint256 _minutes)
+        external
+        onlyHost
+    {
+        minJoinWaitTime = _minutes * 1 minutes;
+    }
 
 
 
@@ -48,6 +58,7 @@ contract Bingo {
         external
         onlyHost
     {
+        require(lastTimeDrawn[gameId]+timeBetweenDraws < block.timestamp);
         bytes32 buffer = blockhash(block.number - 1);
         bytes1 drawn = bytes1(buffer);
         while (drawn == bytes1(0)) {
@@ -57,6 +68,16 @@ contract Bingo {
         lastDrawn[gameId] = bytes1(buffer);
     }
         mapping(uint256 => bytes1) public lastDrawn;
+        mapping(uint256 => uint256) public lastTimeDrawn;
+        uint256 timeBetweenDraws;
+
+    function setTimeBetweenDraws(uint256 _minutes)
+        external
+        onlyHost
+    {
+        timeBetweenDraws = _minutes * 1 minutes;
+    }
+
 
 
 
